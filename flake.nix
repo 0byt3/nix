@@ -2,22 +2,25 @@
   description = "Eric Macbook Setup";
 
   inputs = {
+    mac-app-util.url = "github:hraban/mac-app-util";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nix-homebrew.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew }:
+  outputs = inputs@{ self, mac-app-util, nix-darwin, nixpkgs, nix-homebrew }:
   let
     configuration = { config, pkgs, ... }: {
         # Install packages
         environment.systemPackages = [
           pkgs.wezterm
           pkgs.neovim
+	  pkgs.vscode
           pkgs.vim
         ];
-        
+
         homebrew = {
           enable = true;
           brews = [
@@ -26,7 +29,8 @@
             # the first item in the list is the id
             "mas"
           ];
-          casks = ["firefox"];
+          casks = [
+          ];
 
           # dict of Mac appstore apps to install
           # each item is "<app_name>" = "<app_store_id>"
@@ -40,6 +44,8 @@
 
         # The platform the configuration will be used on.
         nixpkgs.hostPlatform = "aarch64-darwin";
+
+	nixpkgs.config.allowUnfree = true;
 
         # Necessary for using flakes on this system
         nix.settings.experimental-features = "nix-command flakes";
@@ -66,6 +72,7 @@
       darwinConfigurations."macbook" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
+          mac-app-util.darwinModules.default
           nix-homebrew.darwinModules.nix-homebrew {
             nix-homebrew = {
               # Install Homebrew under the default prefix
