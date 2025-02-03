@@ -1,1 +1,0 @@
-/Users/erolleman/.config/nix

@@ -25,8 +25,8 @@
             # cmd eg.: mas search firefox
             # the first item in the list is the id
             "mas"
-          ]
-          casks = ["firefox"]
+          ];
+          casks = ["firefox"];
 
           # dict of Mac appstore apps to install
           # each item is "<app_name>" = "<app_store_id>"
